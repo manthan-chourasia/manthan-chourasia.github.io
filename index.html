@@ -1,33 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>my practice</title>
-	<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Manthan Chourasia</title>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
 
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<link href="https://fonts.googleapis.com/css?family=Hanalei+Fill" rel="stylesheet">
+    <script type="text/paperscript" canvas="canvas">
+        var layer = project.activeLayer;
+
+        var values = {
+            count: 34,
+            points: 32
+        };
+
+        for (var i = 0; i < values.count; i++) {
+            var path = new Path({
+                fillColor: i % 2 ? 'yellow' : 'purple',
+                closed: true
+            });
+
+            var offset = new Point(20 + 10 * i, 0);
+            var l = offset.length;
+            for (var j = 0; j < values.points * 2; j++) {
+                offset.angle += 360 / values.points;
+                var vector = offset.normalize(l * (j % 2 ? 0.1 : -0.1));
+                path.add(offset + vector);
+            }
+            path.smooth({ type: 'continuous' });
+            layer.insertChild(0, new Group({
+                children: [path],
+                applyMatrix: false
+            }));
+        }
+
+        function onFrame(event) {
+            for (var i = 0; i < values.count; i++) {
+                var item = layer.children[i];
+                var angle = (values.count - i) * Math.sin(event.count / 128) / 10;
+                item.rotate(angle);
+            }
+        }
+
+        // Reposition the paths whenever the window is resized:
+        function onResize(event) {
+            layer.position = view.center;
+        }
+    </script>
 </head>
 <body>
-<ul>
-	<li><a href="#">techno</a></li>
-	<li><a href="#">info</a></li>
-	<li><a href="#">plugin</a></li>
-	<li><a href="#">blog</a></li>
-</ul>
-<h1>MY PRACTICE</h1>
-<div class="container">
-	<img src="aerial-alpine-ceresole-reale-1562.jpg">
-	<img src="beach-bird-s-eye-view-coast-50594.jpg">
-	<img src="beach-bora-bora-clouds-753626.jpg">
-</div>
-<section>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</section>
-<script type="text/javascript" src="script.js"></script>
+    <h1>Welcome to my Page</h1>
+    <canvas id="canvas" resize stats hidpi="off"></canvas>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.11.5/paper-full.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 </body>
 </html>
-<!-- style="background-image:url(hd-wallpaper-landscape-long-exposure-68147.jpg)-->
