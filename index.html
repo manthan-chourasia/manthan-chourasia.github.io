@@ -7,50 +7,50 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 
     <script type="text/paperscript" canvas="canvas">
-        var layer = project.activeLayer;
-
-        var values = {
-            count: 34,
-            points: 32
-        };
-
-        for (var i = 0; i < values.count; i++) {
+        var amount = 45;
+        for (var i = 0; i < amount; i++) {
             var path = new Path({
-                fillColor: i % 2 ? 'yellow' : 'purple',
+                fillColor: {
+                    hue: 1,
+                    saturation: 1,
+                    brightness: Math.random()
+                },
                 closed: true
             });
+        }
 
-            var offset = new Point(20 + 10 * i, 0);
-            var l = offset.length;
-            for (var j = 0; j < values.points * 2; j++) {
-                offset.angle += 360 / values.points;
-                var vector = offset.normalize(l * (j % 2 ? 0.1 : -0.1));
-                path.add(offset + vector);
+        var position = view.center;
+        var mousePos = view.center;
+        var children = project.activeLayer.children;
+
+        function iterate(count) {
+            var delta = mousePos - position;
+            position += delta / 10;
+            for (var i = 1; i < amount; i++) {
+                var path = children[i];
+                var length = Math.abs(Math.sin(i + count / 40) * 300);
+                path.segments = [
+                    position + delta / 1.5,
+                    position + { angle: i / amount * 360, length: length },
+                    position + { angle: (i + 1) / amount * 360, length: length }
+                ];
+                path.fillColor.hue = count - length;
             }
-            path.smooth({ type: 'continuous' });
-            layer.insertChild(0, new Group({
-                children: [path],
-                applyMatrix: false
-            }));
         }
 
         function onFrame(event) {
-            for (var i = 0; i < values.count; i++) {
-                var item = layer.children[i];
-                var angle = (values.count - i) * Math.sin(event.count / 128) / 10;
-                item.rotate(angle);
-            }
+            iterate(event.count);
         }
 
-        // Reposition the paths whenever the window is resized:
-        function onResize(event) {
-            layer.position = view.center;
+        function onMouseMove(event) {
+            iterate();
+            mousePos = event.point;
         }
     </script>
 </head>
-<body>
+<body style="background:black">
     <h1>Welcome to my Page</h1>
-    <canvas id="canvas" resize stats hidpi="off"></canvas>
+    <canvas id="canvas" resize></canvas>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.11.5/paper-full.min.js"></script>
     <link rel="stylesheet" href="style.css">
